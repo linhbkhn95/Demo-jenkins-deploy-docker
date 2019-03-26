@@ -8,7 +8,7 @@ node('master') {
 
     stage('Build') {
         withEnv(["PATH=$PATH:~/.local/bin"]){
-          sh 'sudo docker-compose build'
+          sh 'docker-compose build'
         }
     }
 
@@ -18,8 +18,8 @@ node('master') {
 
     stage('Deploy') {
       withEnv(["PATH=$PATH:~/.local/bin"]){
-        sh 'sudo docker-compose down'
-        sh 'sudo docker-compose up -d'
+        sh 'docker-compose down'
+        sh 'docker-compose up -d'
       }
     }
 
