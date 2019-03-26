@@ -1,8 +1,8 @@
 version: "3.5"
 
 services:
-  veo-frontend:
-    container_name: veo-frontend
+  demo-jenkins:
+    # container_name: veo-frontend
     build:
       context: .
       dockerfile: Dockerfile
