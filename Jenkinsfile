@@ -74,7 +74,7 @@ node('master') {
 }
 
 def notifySlack(text) {
-     sh 'echo text'
+     sh "echo ${text}"
     // def slackURL = 'https://hooks.slack.com/services/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'
     // def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
     // def channel = 'droneit'
