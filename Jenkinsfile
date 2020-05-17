@@ -62,7 +62,7 @@ node('master') {
               notifySlack('FAILURE check security analysis')
               throw e
             } finally {
-                sh "docker rmi -f ${imageTag} ${dockerImage}"
+                // sh "docker rmi -f ${imageTag} ${dockerImage}"
             }      
           }
       
