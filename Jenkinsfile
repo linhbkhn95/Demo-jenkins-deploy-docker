@@ -2,6 +2,9 @@ import groovy.json.JsonOutput
 def getGitCommitHash() {
   return sh (script: "git log -n 1 --pretty=format:'%h'", returnStdout: true)
 }
+def getGitBranchName() {
+    return scm.branches[0].name
+}
 node('master') {
  
   //  agent any
@@ -18,7 +21,9 @@ node('master') {
     def appName = 'demo_jenkins'
     def privateRegistry = 'hub.docker.com'
     def workspace = pwd()
-    def imageTag = "${project}/${appName}:${env.BRANCH_NAME}"
+    def BRANCH_NAME = getGitBranchName();
+
+    def imageTag = "${project}/${appName}:${BRANCH_NAME}"
     def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
 
     stage('Checkout source code') {
@@ -32,7 +37,7 @@ node('master') {
           checkout scm
           gitCommitHash = getGitCommitHash()
           imageTag = imageTag + "." + gitCommitHash
-          dockerTag = "${env.BRANCH_NAME}" + "." + gitCommitHash
+          dockerTag = "${BRANCH_NAME}" + "." + gitCommitHash
           dockerImage = "${privateRegistry}/${imageTag}"
     }
 
