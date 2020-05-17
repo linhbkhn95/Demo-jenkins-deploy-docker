@@ -57,7 +57,7 @@ node('master') {
         }
     }
 
-    stage('Run Testing'){
+  stage('Run Testing'){
         try{
             sh 'echo 123'
 
@@ -67,16 +67,16 @@ node('master') {
             notifySlack('FAILURE')
             throw e
         }
-    }
+   }
    stage('Sonarqube analysis'){
         try{
+          sh 'echo sonar-queue'
           // def scannerHome = tool 'SonarQube Scanner';
           //   withSonarQubeEnv {
           //     sh "${scannerHome}/bin/sonar-scanner"
           //     sonarToken = "${SONAR_AUTH_TOKEN}"
           //     sonarHost = "${SONAR_HOST_URL}"
           //   }
-          sh 'sonar queue'
 
         } catch (AssertionError e) {
             notifySlack('FAILURE')
