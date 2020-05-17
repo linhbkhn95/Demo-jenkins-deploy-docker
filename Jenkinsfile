@@ -3,7 +3,8 @@ def getGitCommitHash() {
   return sh (script: "git log -n 1 --pretty=format:'%h'", returnStdout: true)
 }
 def getGitBranchName() {
-    return scm.branches[0].name
+    // return scm.branches[0].name
+    return "master"
 }
 node('master') {
  
@@ -18,7 +19,7 @@ node('master') {
  
   try {
     def project = 'linbkhn95'
-    def appName = 'demo_jenkins'
+    def appName = 'aseorder'
     def privateRegistry = 'hub.docker.com'
     def workspace = pwd()
     def BRANCH_NAME = getGitBranchName();
