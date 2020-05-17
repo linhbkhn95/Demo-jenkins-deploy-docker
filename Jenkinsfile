@@ -18,7 +18,7 @@ node('master') {
   // }
  
   try {
-    def project = 'linbkhn95'
+    def project = 'linhbkhn95'
     def appName = 'aseorder'
     def privateRegistry = 'hub.docker.com'
     def workspace = pwd()
