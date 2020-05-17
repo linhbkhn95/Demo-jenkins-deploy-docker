@@ -42,16 +42,48 @@ node('master') {
           dockerImage = "${privateRegistry}/${imageTag}"
     }
 
-    stage('Build') {
-        withEnv(["PATH=$PATH:~/.local/bin"]){
-          sh 'docker-compose build'
+    // stage('Build') {
+    //     withEnv(["PATH=$PATH:~/.local/bin"]){
+    //       sh 'docker-compose build'
+    //     }
+    // }
+  stage('Install dependencies') {
+        try {
+            def TEST_EXIT_CODE = sh(script:"docker run --rm -v `pwd`:/app/${appName} -w /app/${appName} node:11 sh -c 'npm cache clean --force && rm -rf node_modules && rm -rf package-lock.json && npm install'", returnStatus: true)
+            assert TEST_EXIT_CODE == 0
+        } catch (AssertionError e) {
+            notifySlack('FAILURE')
+            throw e
         }
     }
 
-    stage('Test') {
-      sh 'echo 123'
+    stage('Run Testing'){
+        try{
+            sh 'echo 123'
+
+            // def TEST_EXIT_CODE = sh(script:"docker run --rm -v `pwd`:/app/${appName} -w /app/${appName} node:11 sh -c 'npm test'", returnStatus: true)
+            assert TEST_EXIT_CODE == 0
+        } catch (AssertionError e) {
+            notifySlack('FAILURE')
+            throw e
+        }
     }
-    stage('Build Image') {
+   stage('Sonarqube analysis'){
+        try{
+          // def scannerHome = tool 'SonarQube Scanner';
+          //   withSonarQubeEnv {
+          //     sh "${scannerHome}/bin/sonar-scanner"
+          //     sonarToken = "${SONAR_AUTH_TOKEN}"
+          //     sonarHost = "${SONAR_HOST_URL}"
+          //   }
+          sh 'sonar queue '
+
+        } catch (AssertionError e) {
+            notifySlack('FAILURE')
+            throw e
+        }
+    }
+    stage('Build and push docker image to registry') {
       // unstash 'frontend'
       docker.withRegistry('', 'linhbkhn95') {
             def customImage = docker.build("${imageTag}", "-f ./Dockerfile .")
