@@ -24,15 +24,14 @@ node('master') {
       sh 'echo 123'
     }
     stage('Build Image') {
-      steps {
-        unstash 'frontend'
-        script {
-          docker.withRegistry('', 'docker-hub') {
+      unstash 'frontend'
+      script {
+          docker.withRegistry('', 'linhbkhn95') {
             def image = docker.build('frontend')
             image.push(BUILD_ID)
           }
-        }
       }
+      
     }
     stage('Deploy') {
       withEnv(["PATH=$PATH:~/.local/bin"]){
@@ -42,6 +41,7 @@ node('master') {
     }
 
     notifySlack('SUC CMN CESS');
+   
   } catch (e) {
     notifySlack('ERROR');
   }
