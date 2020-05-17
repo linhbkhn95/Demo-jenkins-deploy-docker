@@ -20,7 +20,7 @@ node('master') {
     def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
     stage('Checkout source code') {
 	    if (env.BRANCH_NAME.matches("master|release-.*")) {
-	        notifyCICD('Running')
+	        notifySlack('Running')
         }
 
 	  //fix permission
@@ -70,6 +70,7 @@ node('master') {
    
   } catch (e) {
     notifySlack('ERROR');
+    throw e
   }
 }
 
