@@ -26,7 +26,7 @@ node('master') {
     stage('Build Image') {
       // unstash 'frontend'
       docker.withRegistry('', 'linhbkhn95') {
-        def image = docker.build('frontend')
+        def image = docker.build('linhbkhn95/aseorder')
         image.push(BUILD_ID)
       }
       
