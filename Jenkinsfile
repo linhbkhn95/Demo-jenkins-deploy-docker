@@ -18,18 +18,19 @@ node('master') {
     def workspace = pwd()
     def imageTag = "${project}/${appName}:${env.BRANCH_NAME}"
     def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
+    
     stage('Checkout source code') {
 	    if (env.BRANCH_NAME.matches("master|release-.*")) {
 	        notifySlack('Running')
         }
 
-	  //fix permission
-  	sh ("sudo chown -R jenkins:jenkins .")
-        checkout scm
-        gitCommitHash = getGitCommitHash()
-        imageTag = imageTag + "." + gitCommitHash
-        dockerTag = "${env.BRANCH_NAME}" + "." + gitCommitHash
-        dockerImage = "${privateRegistry}/${imageTag}"
+	    //fix permission
+          sh ("sudo chown -R jenkins:jenkins .")
+          checkout scm
+          gitCommitHash = getGitCommitHash()
+          imageTag = imageTag + "." + gitCommitHash
+          dockerTag = "${env.BRANCH_NAME}" + "." + gitCommitHash
+          dockerImage = "${privateRegistry}/${imageTag}"
     }
 
     stage('Build') {
