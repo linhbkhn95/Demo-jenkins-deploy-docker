@@ -2,6 +2,7 @@ version: "3.5"
 
 services:
   demo-jenkins:
+    image: frontend
     # container_name: veo-frontend
     build:
       context: .

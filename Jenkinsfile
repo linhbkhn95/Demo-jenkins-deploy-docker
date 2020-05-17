@@ -2,8 +2,16 @@ import groovy.json.JsonOutput
 
 node('master') {
   checkout scm
-  
+  //  agent any
+  //  environment {
+  //   FRONTEND_GIT = 'https://github.com/sontung0/tutorial-jenkins-frontend.git'
+  //   FRONTEND_BRANCH = 'master'
+  //   FRONTEND_IMAGE = 'tutorial-jenkins-frontend'
+  //   FRONTEND_SERVER = '1.2.3.4'
+  //   FRONTEND_SERVER_DIR = './app'
+  // }
   try {
+     
     notifySlack('BUILDING');
 
     stage('Build') {
@@ -15,10 +23,20 @@ node('master') {
     stage('Test') {
       sh 'echo 123'
     }
-
+    stage('Build Image') {
+      steps {
+        unstash 'frontend'
+        script {
+          docker.withRegistry('', 'docker-hub') {
+            def image = docker.build('frontend')
+            image.push(BUILD_ID)
+          }
+        }
+      }
+    }
     stage('Deploy') {
       withEnv(["PATH=$PATH:~/.local/bin"]){
-        sh 'docker-compose down'
+        // sh 'docker-compose down'
         sh 'docker-compose up -d'
       }
     }
