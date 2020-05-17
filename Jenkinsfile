@@ -1,7 +1,12 @@
 import groovy.json.JsonOutput
 
 node('master') {
-  checkout scm
+  def project = 'ghtk_chat'
+	def appName = 'chat_backend'
+	def privateRegistry = 'hub.docker.com'
+	def workspace = pwd()
+	def imageTag = "${project}/${appName}:${env.BRANCH_NAME}"
+	def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
   //  agent any
   //  environment {
   //   FRONTEND_GIT = 'https://github.com/sontung0/tutorial-jenkins-frontend.git'
@@ -10,8 +15,21 @@ node('master') {
   //   FRONTEND_SERVER = '1.2.3.4'
   //   FRONTEND_SERVER_DIR = './app'
   // }
+ 
   try {
-     
+    stage('Checkout source code') {
+	    if (env.BRANCH_NAME.matches("master|release-.*")) {
+	        notifyCICD('Running')
+        }
+
+	  //fix permission
+  	sh ("sudo chown -R jenkins:jenkins .")
+        checkout scm
+        gitCommitHash = getGitCommitHash()
+        imageTag = imageTag + "." + gitCommitHash
+        dockerTag = "${env.BRANCH_NAME}" + "." + gitCommitHash
+        dockerImage = "${privateRegistry}/${imageTag}"
+    }
     notifySlack('BUILDING');
 
     stage('Build') {
@@ -26,9 +44,17 @@ node('master') {
     stage('Build Image') {
       // unstash 'frontend'
       docker.withRegistry('', 'linhbkhn95') {
-        def image = docker.build('linhbkhn95/aseorder')
-        image.push(BUILD_ID)
-      }
+            def customImage = docker.build("${imageTag}", "-f ./Dockerfile .")
+            try {
+              customImage.push()
+              notifySlack("Build Success")
+            } catch (AssertionError e) {
+              notifySlack('FAILURE check security analysis')
+              throw e
+            } finally {
+                sh "docker rmi -f ${imageTag} ${dockerImage}"
+            }      
+          }
       
       
     }
