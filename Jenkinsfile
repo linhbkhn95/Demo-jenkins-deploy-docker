@@ -76,7 +76,7 @@ node('master') {
           //     sonarToken = "${SONAR_AUTH_TOKEN}"
           //     sonarHost = "${SONAR_HOST_URL}"
           //   }
-          sh 'sonar queue '
+          sh 'sonar queue'
 
         } catch (AssertionError e) {
             notifySlack('FAILURE')
