@@ -1,12 +1,7 @@
 import groovy.json.JsonOutput
 
 node('master') {
-  def project = 'ghtk_chat'
-	def appName = 'chat_backend'
-	def privateRegistry = 'hub.docker.com'
-	def workspace = pwd()
-	def imageTag = "${project}/${appName}:${env.BRANCH_NAME}"
-	def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
+ 
   //  agent any
   //  environment {
   //   FRONTEND_GIT = 'https://github.com/sontung0/tutorial-jenkins-frontend.git'
@@ -17,6 +12,12 @@ node('master') {
   // }
  
   try {
+    def project = 'linbkhn95'
+    def appName = 'demo_jenkins'
+    def privateRegistry = 'hub.docker.com'
+    def workspace = pwd()
+    def imageTag = "${project}/${appName}:${env.BRANCH_NAME}"
+    def composerTag = "$appName${env.BRANCH_NAME}${env.BUILD_NUMBER}"
     stage('Checkout source code') {
 	    if (env.BRANCH_NAME.matches("master|release-.*")) {
 	        notifyCICD('Running')
@@ -73,6 +74,7 @@ node('master') {
 }
 
 def notifySlack(text) {
+     sh 'echo text'
     // def slackURL = 'https://hooks.slack.com/services/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'
     // def jenkinsIcon = 'https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png'
     // def channel = 'droneit'
