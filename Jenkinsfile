@@ -24,13 +24,12 @@ node('master') {
       sh 'echo 123'
     }
     stage('Build Image') {
-      unstash 'frontend'
-      script {
-          docker.withRegistry('', 'linhbkhn95') {
-            def image = docker.build('frontend')
-            image.push(BUILD_ID)
-          }
+      // unstash 'frontend'
+      docker.withRegistry('', 'linhbkhn95') {
+        def image = docker.build('frontend')
+        image.push(BUILD_ID)
       }
+      
       
     }
     stage('Deploy') {
