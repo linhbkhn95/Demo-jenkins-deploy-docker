@@ -31,7 +31,6 @@ node('master') {
         dockerTag = "${env.BRANCH_NAME}" + "." + gitCommitHash
         dockerImage = "${privateRegistry}/${imageTag}"
     }
-    notifySlack('BUILDING');
 
     stage('Build') {
         withEnv(["PATH=$PATH:~/.local/bin"]){
