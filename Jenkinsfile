@@ -89,12 +89,15 @@ node('master') {
             def customImage = docker.build("${imageTag}", "-f ./Dockerfile .")
             try {
               customImage.push()
+              sh "docker rmi -f ${imageTag} ${dockerImage}"
+
               notifySlack("Build Success")
+
             } catch (AssertionError e) {
               notifySlack('FAILURE check security analysis')
               throw e
             } finally {
-                // sh "docker rmi -f ${imageTag} ${dockerImage}"
+               sh "docker rmi -f ${imageTag} ${dockerImage}"
             }      
           }
       
@@ -103,11 +106,14 @@ node('master') {
     stage('Deploy') {
       withEnv(["PATH=$PATH:~/.local/bin"]){
         // sh 'docker-compose down'
-        sh 'docker-compose up -d'
+        sh "docker pull ${dockerImage}"
+        // sh 'docker-compose up -d'
+        sh "docker run -d --network=host  --restart=always ${dockerImage}"
+        notifySlack('SUC CMN CESS');
+
       }
     }
 
-    notifySlack('SUC CMN CESS');
    
   } catch (e) {
     notifySlack('ERROR');
