@@ -106,9 +106,9 @@ node('master') {
     stage('Deploy') {
       withEnv(["PATH=$PATH:~/.local/bin"]){
         // sh 'docker-compose down'
-        sh "docker pull ${dockerImage}"
+        sh "docker pull ${imageTag}"
         // sh 'docker-compose up -d'
-        sh "docker run -d --network=host  --restart=always ${dockerImage}"
+        sh "docker run -d --network=host  --restart=always ${imageTag}"
         notifySlack('SUC CMN CESS');
 
       }
