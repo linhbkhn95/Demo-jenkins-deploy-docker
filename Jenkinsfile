@@ -21,6 +21,8 @@ node('master') {
     def project = 'linhbkhn95'
     def appName = 'aseorder'
     def privateRegistry = 'hub.docker.com'
+    ef privateRegistry = 'example.com'
+
     def workspace = pwd()
     def BRANCH_NAME = getGitBranchName();
 
@@ -85,7 +87,7 @@ node('master') {
     }
     stage('Build and push docker image to registry') {
       // unstash 'frontend'
-      docker.withRegistry('', 'linhbkhn95') {
+      docker.withRegistry('', 'exampleregistry') {
             def customImage = docker.build("${imageTag}", "-f ./Dockerfile .")
             try {
               customImage.push()
