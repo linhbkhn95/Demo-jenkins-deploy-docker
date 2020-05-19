@@ -20,8 +20,8 @@ node('master') {
   try {
     def project = 'linhbkhn95'
     def appName = 'aseorder'
-    def privateRegistry = 'hub.docker.com'
-    ef privateRegistry = 'example.com'
+    // def privateRegistry = 'hub.docker.com'
+    def privateRegistry = 'example.com'
 
     def workspace = pwd()
     def BRANCH_NAME = getGitBranchName();
