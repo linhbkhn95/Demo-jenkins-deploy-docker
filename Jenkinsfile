@@ -87,7 +87,7 @@ node('master') {
     }
     stage('Build and push docker image to registry') {
       // unstash 'frontend'
-      docker.withRegistry('', 'exampleregistry') {
+      docker.withRegistry("http://${privateRegistry}", 'exampleregistry') {
             def customImage = docker.build("${imageTag}", "-f ./Dockerfile .")
             try {
               customImage.push()
@@ -108,7 +108,7 @@ node('master') {
     stage('Deploy') {
       withEnv(["PATH=$PATH:~/.local/bin"]){
         // sh 'docker-compose down'
-        docker.withRegistry('', 'linhbkhn95') {
+        docker.withRegistry("http://${privateRegistry}", 'linhbkhn95') {
           sh "docker pull ${imageTag}"
           // sh 'docker-compose up -d'
           sh "docker run -d --network=host  --restart=always ${imageTag}"
